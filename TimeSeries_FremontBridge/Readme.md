@@ -1,73 +1,61 @@
-### NYC Green Taxi Data Cleaning & Analysis
+### Homework 3: Time-Series Analysis with Pandas
 
-This project involves cleaning and analyzing the NYC Green Taxi dataset (December 2019) using Pandas and Apache Spark in Databricks. The dataset is sourced from Databricks' public repository.
+This analyzing time-series data (Seattle’s Fremont Bridge bicycle crossings) using Pandas. The dataset is publicly available from Seattle's data portal.
 
 ---
 
 ### Dataset Source:
-- **Databricks:** dbfs:/databricks-datasets/nyctaxi/tripdata/green/green_tripdata_2019-12.csv.gz
+
+`https://data.seattle.gov/api/views/65db-xm6k/rows.csv?accessType=DOWNLOAD`
 
 ---
 
 ### Tasks & Implementation:
 
-Load Dataset:
-df = (
-    spark.read.format('csv')
-    .load(path, header=True)
-    .toPandas()
-)
-
-1. Convert Datetime Columns:
-df['lpep_pickup_datetime'] = pd.to_datetime(df['lpep_pickup_datetime'])
-df['lpep_dropoff_datetime'] = pd.to_datetime(df['lpep_dropoff_datetime'])
-
-2. Filter for December 2019 Trips:
-df = df[
-    (df['lpep_pickup_datetime'] >= '2019-12-01') &
-    (df['lpep_dropoff_datetime'] <= '2019-12-31')
-]
-
-3. Remove Invalid Trips:
-df = df[df['lpep_dropoff_datetime'] >= df['lpep_pickup_datetime']]
-
-4. Remove Negative Values:
-cols = [
-    'trip_distance', 'fare_amount', 'extra', 'mta_tax',   
-    'tip_amount', 'improvement_surcharge', 'total_amount', 'congestion_surcharge'
-]
-
-df = df[(df[cols] >= 0).all(axis=1)]
-
-5. Handle Missing Values:
-df = df.dropna(subset=['VendorID'])
-print(f"Rows after cleaning: {len(df)}")
-
-6. Rename Columns:
-df.rename(columns={
-    'lpep_pickup_datetime': 'pickup_datetime',
-    'lpep_dropoff_datetime': 'dropoff_datetime'
-}, inplace=True)
-
-7. Identify Highest Fare Trip:
-highest_fare_trip = df.loc[df['fare_amount'].idxmax()]
-print(highest_fare_trip)
+**Load Dataset:**
+`!curl -o FremontBridge.csv https://data.seattle.gov/api/views/65db-xm6k/rows.csv?accessType=DOWNLOAD`
 
 
-Running the Project:
-Load data via Spark in Databricks.
-Execute cleaning and analysis steps with Pandas.
-Review final dataset and insights.
+**1. Plot Weekly bicycle crossings using resampling:**
+`data.resample('W').sum().plot()`
 
 
-Tools & Libraries:
-Databricks, Apache Spark, Pandas
-
-License:
-For educational and analytical use only.
+**2. Plot Weekly bicycle crossings using a 7-day rolling mean:**
+`data = df.resample('D').sum() data.rolling(7).mean().plot()`
 
 
-References:
-Databricks Datasets  
-Pandas Docs  
-Spark Docs
+**3. 50-day rolling mean with Gaussian window (std=30 days):**
+`data.rolling(window=50, win_type='gaussian').mean(std=30).plot()`
+
+
+**4. Plot Average Daily Counts (Monday–Sunday):**
+`by_day = df.groupby(df.index.day_name()).mean() by_day_ordered = by_day.reindex(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']) by_day_ordered.plot()`
+
+
+**4. Plot daily data by hourly intervals:**
+`hourly_ticks = 4 * 60 * 60 * np.arange(6) by_time = df.groupby(df.index.time).mean() by_time.plot(xticks=hourly_ticks, style=[':', '--', '-'])`
+
+
+---
+
+### Running the Project:
+- Load dataset using Pandas.
+- Run data resampling, rolling mean, and hourly analysis.
+- Visualize results clearly.
+
+---
+
+### Tools & Libraries:
+- Python, Pandas, Matplotlib, NumPy
+
+---
+
+### License:
+- For educational and analytical purposes only.
+
+---
+
+### References:
+- Seattle Open Data  
+- Pandas Documentation  
+- Matplotlib Documentation  
