@@ -1,4 +1,4 @@
-### Homework 3: Time-Series Analysis with Pandas
+Time-Series Analysis with Pandas
 
 This analyzing time-series data (Seattle’s Fremont Bridge bicycle crossings) using Pandas. The dataset is publicly available from Seattle's data portal.
 
