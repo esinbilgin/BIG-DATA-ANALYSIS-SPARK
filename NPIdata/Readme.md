@@ -1,7 +1,8 @@
 ### US Doctor Database Analysis
 
-This project analyzes the publicly available NPI (National Provider Identifier) database to visualize the distribution of medical practices. The goal is to identify active practitioners based on their medical taxonomy categories.
-Ouptuts can change due to the data uploading date from the source.
+<p style="font-size: small;">
+This project analyzes the publicly available NPI (National Provider Identifier) database for US doctors, identifying active practitioners and visualizing their distribution based on medical taxonomy categories. Outputs may vary depending on the date of data upload.
+</p>
 ---
 
 ### Dataset Sources:
